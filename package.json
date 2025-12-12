@@ -4,7 +4,10 @@
   "description": "Intelligent weather notification system with AI agent orchestration, automated scheduling via BullMQ, and Redis-backed job queues.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "db:up": "docker-compose up -d mongo redis",
+    "db:down": "docker-compose down",
+    "db:nuke": "docker-compose down -v",
+    "dev:backend": "pnpm --filter backend dev"
   },
   "repository": {
     "type": "git",
