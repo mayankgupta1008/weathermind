@@ -22,9 +22,8 @@ services:
     restart: unless-stopped
     ports:
       - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: user
-      MONGO_INITDB_ROOT_PASSWORD: root
+    env_file:
+      - .env
     volumes:
       - mongodb_data:/data/db
     networks:
@@ -46,15 +45,50 @@ services:
     restart: unless-stopped
     ports:
       - "8081:8081"
-    environment:
-      ME_CONFIG_MONGODB_SERVER: mongodb
-      ME_CONFIG_MONGODB_ADMINUSERNAME: user
-      ME_CONFIG_MONGODB_ADMINPASSWORD: root
-      ME_CONFIG_MONGODB_ENABLE_ADMIN: "true"
-      ME_CONFIG_BASICAUTH_USERNAME: admin
-      ME_CONFIG_BASICAUTH_PASSWORD: admin
+    env_file:
+      - .env
     depends_on:
       mongodb:
+        condition: service_healthy
+    networks:
+      - app_network
+
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    container_name: weather-agent-backend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./apps/backend/.env
+    volumes:
+      - ./apps/backend/src:/app/apps/backend/src
+      - ./packages:/app/packages
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - app_network
+
+  weather-agent:
+    build:
+      context: .
+      dockerfile: apps/weather-agent/Dockerfile
+    container_name: weather-agent
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    env_file:
+      - ./apps/weather-agent/.env
+    volumes:
+      - ./apps/weather-agent/src:/app/apps/weather-agent/src
+      - ./packages:/app/packages
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     networks:
       - app_network

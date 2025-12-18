@@ -4,9 +4,10 @@
   "description": "Intelligent weather notification system with AI agent orchestration, automated scheduling via BullMQ, and Redis-backed job queues.",
   "main": "index.js",
   "scripts": {
-    "db:up": "docker-compose up -d mongodb redis mongo-express",
-    "db:down": "docker-compose down",
-    "db:nuke": "docker-compose down -v",
+    "services:up": "docker-compose up -d --build",
+    "services:down": "docker-compose down",
+    "services:nuke": "docker-compose down -v",
+    "services:rebuild": "docker-compose build --no-cache && docker-compose up -d",
     "dev:backend": "pnpm --filter backend dev"
   },
   "repository": {
