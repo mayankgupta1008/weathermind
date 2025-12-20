@@ -1,5 +1,6 @@
 import express from "express";
 import connectDB from "./lib/db.js";
+import "./lib/redis.js";
 import dotenv from "dotenv";
 dotenv.config();
 
