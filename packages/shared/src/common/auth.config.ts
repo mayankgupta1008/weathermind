@@ -1,6 +1,7 @@
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import mongoose from "mongoose";
+import { bearer } from "better-auth/plugins";
 import connectDB from "./db.config.js";
 
 await connectDB();
@@ -8,6 +9,7 @@ await connectDB();
 export const auth = betterAuth({
   database: mongodbAdapter(mongoose.connection.getClient().db()),
   baseURL: "http://localhost:5001",
+  plugins: [bearer()],
   trustedOrigins: [
     "http://localhost:5001", // Your backend
     "http://localhost:3000", // Add your frontend URL

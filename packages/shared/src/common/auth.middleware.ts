@@ -18,8 +18,8 @@ export const requireAuth = async (
     }
 
     // Attach user and session to the request object (or res.locals)
-    res.locals.user = session.user;
-    res.locals.session = session.session;
+    (req as any).user = session.user;
+    (req as any).session = session.session;
 
     next();
   } catch (error) {
