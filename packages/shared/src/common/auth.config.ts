@@ -3,11 +3,21 @@ import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import mongoose from "mongoose";
 import { bearer } from "better-auth/plugins";
 import connectDB from "./db.config.js";
+import WeatherEmail from "../models/weatherEmail.model.js";
 
 await connectDB();
 
 export const auth = betterAuth({
   database: mongodbAdapter(mongoose.connection.getClient().db()),
+  user: {
+    deleteUser: {
+      enabled: true,
+      afterDelete: async (user) => {
+        await WeatherEmail.deleteMany({ user: user.id });
+        console.log(`Deleted weather schedules for user: ${user.id}`);
+      },
+    },
+  },
   baseURL: `http://localhost:${process.env.BACKEND_PORT || 5001}`,
   plugins: [bearer()],
   trustedOrigins: [
