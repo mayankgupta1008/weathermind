@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const connectDB = async () => {
   try {
     if (mongoose.connection.readyState === 1) {
-      console.log("MongoDB already connected");
+      console.log("✅ MongoDB already connected");
       return;
     }
 
@@ -16,7 +16,7 @@ const connectDB = async () => {
     }
 
     await mongoose.connect(uri);
-    console.log("MongoDB connected");
+    console.log("✅ MongoDB connected");
   } catch (error) {
     console.error("Error connecting to database:", error);
     process.exit(1);

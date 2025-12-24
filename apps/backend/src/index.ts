@@ -5,6 +5,7 @@ import { toNodeHandler } from "better-auth/node";
 import connectDB from "@weather-agent/shared/src/common/db.config.js";
 import { auth } from "@weather-agent/shared/src/common/auth.config.js";
 import { requireAuth } from "@weather-agent/shared/src/common/auth.middleware.js";
+import weatherScheduleRouter from "./routes/weatherSchedule.route.js";
 
 dotenv.config();
 
@@ -30,9 +31,12 @@ app.use(
  * - GET  /api/auth/get-session
  * - etc.
  */
+
 app.use("/api/auth", toNodeHandler(auth));
 
 app.use(express.json());
+
+app.use("/api/schedule", weatherScheduleRouter);
 
 /**
  * 3. Sample Protected Route
@@ -53,9 +57,6 @@ const startServer = async () => {
     await connectDB();
     app.listen(PORT, () => {
       console.log(`Backend service running on http://localhost:${PORT}`);
-      console.log(
-        `Auth endpoints available at http://localhost:${PORT}/api/auth/:path`
-      );
     });
   } catch (error) {
     console.error("Failed to start server:", error);

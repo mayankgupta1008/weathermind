@@ -8,7 +8,6 @@ const weatherEmailSchema = new mongoose.Schema(
     },
     city: { type: String, required: true },
     recipientEmail: { type: String, required: true },
-    enabled: { type: Boolean, default: true },
   },
   {
     timestamps: true,
