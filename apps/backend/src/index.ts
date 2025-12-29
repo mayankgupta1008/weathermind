@@ -36,6 +36,10 @@ app.use("/api/auth", toNodeHandler(auth));
 
 app.use(express.json());
 
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 app.use("/api/schedule", weatherScheduleRouter);
 
 const BACKEND_PORT = process.env.BACKEND_PORT || 5001;

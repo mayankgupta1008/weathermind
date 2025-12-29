@@ -53,6 +53,17 @@ services:
     networks:
       - app_network
 
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./infra/nginx/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - app_network
+
   backend:
     build:
       context: .
@@ -72,6 +83,20 @@ services:
         condition: service_healthy
     networks:
       - app_network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:5001/health",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
 
   agent-service:
     build:
@@ -91,6 +116,41 @@ services:
       mongodb:
         condition: service_healthy
       redis:
+        condition: service_healthy
+    networks:
+      - app_network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:5002/health",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: web
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    env_file:
+      - ./packages/shared/.env
+    volumes:
+      - ./apps/web/src:/app/apps/web/src
+      - ./packages:/app/packages
+    depends_on:
+      backend:
+        condition: service_healthy
+      agent-service:
         condition: service_healthy
     networks:
       - app_network

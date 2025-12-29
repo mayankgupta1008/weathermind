@@ -16,6 +16,10 @@ app.use(
   express.json()
 );
 
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 const AGENT_PORT = process.env.AGENT_PORT || 5002;
 
 const startServer = async () => {
