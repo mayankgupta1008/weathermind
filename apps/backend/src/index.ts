@@ -1,5 +1,5 @@
 import express from "express";
-import cors from "cors";
+
 import dotenv from "dotenv";
 import { toNodeHandler } from "better-auth/node";
 import connectDB from "@weather-agent/shared/src/common/db.config.js";
@@ -11,28 +11,16 @@ dotenv.config();
 const app = express();
 
 /**
- * 1. Configure CORS
- * BetterAuth relies on cookies/headers, so we MUST enable credentials
- * and specify the exact origin of your frontend.
- */
-app.use(
-  cors({
-    origin: [`http://localhost:${process.env.FRONTEND_PORT || 3000}`], // Replace with your frontend URL if different
-    credentials: true,
-  })
-);
-
-/**
  * 2. Mount BetterAuth Handler
  * This single line handles ALL auth logic:
- * - POST /api/auth/sign-up/email
- * - POST /api/auth/sign-in/email
- * - GET  /api/auth/get-session
+ * - POST /auth/sign-up/email
+ * - POST /auth/sign-in/email
+ * - GET  /auth/get-session
  * - etc.
  */
 
 // Better-auth suggests to put this before express.json()
-app.use("/api/auth", toNodeHandler(auth));
+app.use("/auth", toNodeHandler(auth));
 
 app.use(express.json());
 
@@ -40,7 +28,7 @@ app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
 });
 
-app.use("/api/schedule", weatherScheduleRouter);
+app.use("/schedule", weatherScheduleRouter);
 
 const BACKEND_PORT = process.env.BACKEND_PORT || 5001;
 
