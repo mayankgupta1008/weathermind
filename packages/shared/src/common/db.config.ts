@@ -7,12 +7,16 @@ const connectDB = async () => {
       return;
     }
 
-    const uri =
-      process.env.MONGODB_URI || "mongodb://localhost:27017/weather-agent";
+    let uri = process.env.MONGODB_URI;
+
     if (!uri) {
-      throw new Error(
-        "Please provide MONGODB_URI in the environment variables"
-      );
+      if (process.env.NODE_ENV === "production") {
+        throw new Error(
+          "Please provide MONGODB_URI in the environment variables"
+        );
+      }
+      uri = "mongodb://localhost:27017/weather-agent";
+      console.warn("⚠️  Using local MongoDB fallback");
     }
 
     await mongoose.connect(uri);
