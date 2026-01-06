@@ -1,5 +1,3 @@
-# syntax=docker/dockerfile:1
-
 # Base stage for shared environment variables and tools
 FROM node:22-alpine AS base
 RUN corepack enable
