@@ -1,10 +1,10 @@
 import Footer from "./components/Footer";
-import { SonnerDemo } from "./components/Navbar";
+import Navbar from "./components/Navbar";
 
 function App() {
   return (
     <>
-      <SonnerDemo />
+      <Navbar />
       <Footer />
     </>
   );
