@@ -1,6 +1,5 @@
-// import Footer from "./components/Footer";
-import Navbar from "./components/Navbar";
-import SignupPage from "./pages/SignupPage";
+import Navbar from "@/components/Navbar";
+import SignupPage from "@/pages/SignupPage";
 function App() {
   return (
     <>
