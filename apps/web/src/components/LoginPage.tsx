@@ -11,19 +11,22 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import googleLogo from "@/assets/google-logo.svg";
+import { createAuthClient } from "better-auth/client";
 
-export default function LoginPage() {
+const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const authClient = createAuthClient();
 
   const handleSubmit = async () => {
     setIsLoading(true);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    await authClient.signIn.email({
+      email,
+      password,
+    });
 
-    console.log("Login attempted with:", { email, password });
     setIsLoading(false);
   };
 
@@ -119,6 +122,7 @@ export default function LoginPage() {
               <a
                 href="#"
                 className="text-blue-600 hover:text-blue-700 hover:underline font-medium"
+                onClick={handleSubmit}
               >
                 Sign up
               </a>
@@ -128,4 +132,6 @@ export default function LoginPage() {
       </div>
     </div>
   );
-}
+};
+
+export default LoginPage;

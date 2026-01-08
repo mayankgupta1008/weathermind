@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import { bearer } from "better-auth/plugins";
 import connectDB from "./db.config.js";
 import WeatherEmail from "../models/weatherEmail.model.js";
+import { oAuthProxy } from "better-auth/plugins";
 
 await connectDB();
 
@@ -18,18 +19,22 @@ export const auth = betterAuth({
       },
     },
   },
-  baseURL: process.env.BETTER_AUTH_URL || `http://localhost/api/auth`,
-  plugins: [bearer()],
-  trustedOrigins: [
-    process.env.BETTER_AUTH_URL ||
-      `http://localhost:${process.env.BACKEND_PORT || 5001}`,
-    process.env.FRONTEND_URL ||
-      `http://localhost:${process.env.FRONTEND_PORT || 3000}`,
+  baseURL: "http://localhost/api/auth",
+  plugins: [
+    bearer(),
+    oAuthProxy({
+      productionURL: "http://localhost:5173",
+      currentURL: "http://localhost:5173",
+    }),
   ],
+  trustedOrigins: ["http://localhost"],
   emailAndPassword: {
     enabled: true,
   },
-  advanced: { disableOriginCheck: process.env.NODE_ENV !== "production" },
+  advanced: {
+    useSecureCookies: process.env.NODE_ENV === "production",
+    disableOriginCheck: process.env.NODE_ENV !== "production",
+  },
   socialProviders: {
     google: {
       enabled: true,

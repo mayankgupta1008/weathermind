@@ -24,22 +24,22 @@ const app = express();
  */
 
 // Better-auth suggests to put this before express.json()
-app.use("/auth", toNodeHandler(auth));
+app.use("/api/auth", toNodeHandler(auth));
 
 app.use(express.json());
 
 initMetrics("backend");
 
-app.get("/health", (req, res) => {
+app.get("/api/health", (req, res) => {
   res.status(200).json({ status: "ok" });
 });
 
-app.get("/metrics", async (req, res) => {
+app.get("/api/metrics", async (req, res) => {
   res.set("Content-Type", contentType);
   res.end(await metricsEndpoint());
 });
 
-app.use("/schedule", weatherScheduleRouter);
+app.use("/api/schedule", weatherScheduleRouter);
 
 const BACKEND_PORT = process.env.BACKEND_PORT || 5001;
 
@@ -47,9 +47,11 @@ const startServer = async () => {
   try {
     await connectDB();
     app.listen(BACKEND_PORT, () => {
-      console.log(
-        `Backend service running on http://localhost:${BACKEND_PORT}`
-      );
+      process.env.NODE_ENV === "production"
+        ? console.log(`Backend service running on ${BACKEND_PORT}`)
+        : console.log(
+            `Backend service running on http://localhost:${BACKEND_PORT}`
+          );
     });
   } catch (error) {
     console.error("Failed to start server:", error);
