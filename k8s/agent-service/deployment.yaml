@@ -1,0 +1,72 @@
+# Kubernetes Deployment for Agent Service
+# Manages the agent-service pods that handle background jobs and external API integrations
+#
+# This deployment:
+# - Runs background workers for weather email notifications
+# - Connects to Redis for job queue management
+# - Uses MongoDB for data persistence
+# - Integrates with external APIs (OpenWeather, Gmail)
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agent-service
+  namespace: default
+spec:
+  # Run 1 replica (increase for high availability)
+  # Note: If scaling >1, ensure job queue is configured for distributed processing
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: agent-service
+
+  template:
+    metadata:
+      labels:
+        app: agent-service
+    spec:
+      containers:
+        - name: agent-service
+          # Replace with your actual image
+          # Build: docker build -f apps/agent-service/Dockerfile.prod -t agent-service:latest .
+          image: agent-service:local
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 5002
+              name: http
+
+          # ========================================
+          # ENVIRONMENT VARIABLES
+          # ========================================
+          envFrom:
+            # Load non-sensitive config (ports, hosts, NODE_ENV)
+            - configMapRef:
+                name: agent-service-config
+            # Load sensitive config (API keys, email credentials)
+            - secretRef:
+                name: agent-service-secret
+
+          # ========================================
+          # HEALTH CHECKS
+          # ========================================
+          # Readiness probe - when should this pod receive traffic?
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 5002
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+
+          # Liveness probe - when should k8s restart this pod?
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5002
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3

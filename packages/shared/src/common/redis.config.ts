@@ -5,6 +5,8 @@ export const redisConnection = {
   host: process.env.REDIS_HOST,
   port: Number(process.env.REDIS_PORT),
   maxRetriesPerRequest: null,
+  lazyConnect: true,
+  enableOfflineQueue: false,
 };
 
 // Redis instance for direct use
@@ -17,3 +19,12 @@ redisClient.on("error", (error) => {
 redisClient.on("connect", () => {
   console.log("✅ Redis connected");
 });
+
+export const connectRedis = async () => {
+  try {
+    await redisClient.connect();
+    console.log("✅ Redis connected");
+  } catch (error) {
+    console.error("Redis connection error: ", error);
+  }
+};

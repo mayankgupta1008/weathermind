@@ -1,0 +1,80 @@
+# ClusterIssuer for Let's Encrypt SSL Certificates
+# This tells cert-manager how to request and renew SSL certificates automatically
+#
+# IMPORTANT: Always test with staging first to avoid rate limits!
+# Let's Encrypt rate limits: 50 certificates per domain per week
+
+---
+# STAGING ISSUER - Use this for testing
+# Certificates from staging won't be trusted by browsers, but you can test the flow
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging
+spec:
+  acme:
+    # Let's Encrypt staging server (unlimited rate limits)
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+
+    # Email for certificate expiration notifications
+    # CHANGE THIS to your actual email!
+    email: your-email@example.com
+
+    # Secret to store the account private key
+    privateKeySecretRef:
+      name: letsencrypt-staging-key
+
+    # HTTP-01 challenge solver
+    # cert-manager will create temporary Ingress rules to verify domain ownership
+    solvers:
+      - http01:
+          ingress:
+            class: nginx
+
+---
+# PRODUCTION ISSUER - Use this after testing with staging
+# Certificates from production will be trusted by all browsers
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    # Let's Encrypt production server
+    # Rate limit: 50 certificates per domain per week
+    server: https://acme-v02.api.letsencrypt.org/directory
+
+    # Email for certificate expiration notifications
+    # CHANGE THIS to your actual email!
+    email: your-email@example.com
+
+    # Secret to store the account private key
+    privateKeySecretRef:
+      name: letsencrypt-prod-key
+
+    # HTTP-01 challenge solver
+    solvers:
+      - http01:
+          ingress:
+            class: nginx
+
+---
+# HOW TO USE:
+#
+# 1. Update the email addresses above to your real email
+#
+# 2. Apply this file:
+#    kubectl apply -f k8s/cert-manager-issuer.yaml
+#
+# 3. Verify issuers are ready:
+#    kubectl get clusterissuer
+#
+# 4. In your Ingress, add annotation:
+#    cert-manager.io/cluster-issuer: "letsencrypt-staging"  # For testing
+#    cert-manager.io/cluster-issuer: "letsencrypt-prod"     # For production
+#
+# 5. cert-manager will automatically:
+#    - Request certificate from Let's Encrypt
+#    - Complete HTTP-01 challenge
+#    - Create a Secret with the certificate
+#    - Renew certificate before expiration (every 60 days)

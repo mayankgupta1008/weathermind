@@ -1,0 +1,48 @@
+# Kubernetes ConfigMap for Agent Service
+# Contains NON-SENSITIVE configuration data
+#
+# What is this service?
+# - Handles background jobs (weather email worker)
+# - Uses Redis for job queue
+# - Connects to MongoDB for data persistence
+#
+# ConfigMaps store configuration in PLAIN TEXT - visible to anyone with cluster access
+# DO NOT put passwords, API keys, or secrets here!
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: agent-service-config
+  namespace: default
+data:
+  # ========================================
+  # APPLICATION SETTINGS
+  # ========================================
+  # Node environment (development, production, staging)
+  # Used by: packages/shared/src/common/auth.config.ts for cookie security
+  NODE_ENV: "production"
+
+  # Port the agent service listens on
+  # Used by: apps/agent-service/src/index.ts
+  # Must match the containerPort in deployment.yaml
+  AGENT_PORT: "5002"
+
+  # ========================================
+  # DATABASE CONNECTION
+  # ========================================
+  # MongoDB connection string (without credentials)
+  # Used by: packages/shared/src/common/db.config.ts
+  # Format: mongodb://<service-name>:<port>/<database-name>
+  # Note: Credentials should be in Secret, not here
+  MONGODB_URI: "mongodb://mongodb:27017/weather-agent"
+
+  # ========================================
+  # REDIS CONNECTION (Job Queue)
+  # ========================================
+  # Redis host - using Kubernetes service name for DNS resolution
+  # Used by: packages/shared/src/common/redis.config.ts
+  REDIS_HOST: "redis"
+
+  # Redis port - standard Redis port
+  # Used by: packages/shared/src/common/redis.config.ts
+  REDIS_PORT: "6379"

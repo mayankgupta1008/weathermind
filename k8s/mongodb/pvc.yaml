@@ -1,0 +1,12 @@
+# In production systems pods die but the volume must survive, pvc is a type of contract and kubernetes binds it to actual storage
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongodb-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi

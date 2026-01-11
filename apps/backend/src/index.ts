@@ -17,9 +17,9 @@ const app = express();
 /**
  * 2. Mount BetterAuth Handler
  * This single line handles ALL auth logic:
- * - POST /auth/sign-up/email
- * - POST /auth/sign-in/email
- * - GET  /auth/get-session
+ * - POST /api/auth/sign-up/email
+ * - POST /api/auth/sign-in/email
+ * - GET  /api/auth/get-session
  * - etc.
  */
 
@@ -45,7 +45,10 @@ const BACKEND_PORT = process.env.BACKEND_PORT || 5001;
 
 const startServer = async () => {
   try {
-    await connectDB();
+    // Used .then() and .catch() as we need to reduce the up time when a kubernetes pod starts. If we use async-await then ir will wait for the database to connect before starting the server hence increasing the up time.
+    connectDB()
+      .then(() => console.log("DB ready"))
+      .catch((err) => console.error("DB failed"));
     app.listen(BACKEND_PORT, () => {
       process.env.NODE_ENV === "production"
         ? console.log(`Backend service running on ${BACKEND_PORT}`)

@@ -1,0 +1,26 @@
+# Kubernetes Service for Agent Service
+# Exposes the agent-service pods within the cluster
+#
+# This service provides:
+# - Internal DNS name: agent-service.default.svc.cluster.local
+# - Load balancing across agent-service pods
+# - Health check endpoint for monitoring
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: agent-service
+  namespace: default
+spec:
+  # ClusterIP = internal only (not exposed outside cluster)
+  # Use NodePort or LoadBalancer to expose externally
+  type: ClusterIP
+
+  selector:
+    app: agent-service
+
+  ports:
+    - port: 5002 # Port exposed by the Service
+      targetPort: 5002 # Port the container listens on
+      protocol: TCP
+      name: http
