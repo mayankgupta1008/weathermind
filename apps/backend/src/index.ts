@@ -41,7 +41,7 @@ app.get("/api/metrics", async (req, res) => {
 
 app.use("/api/schedule", weatherScheduleRouter);
 
-const BACKEND_PORT = process.env.BACKEND_PORT || 5001;
+const PORT = process.env.PORT || 5001;
 
 const startServer = async () => {
   try {
@@ -49,12 +49,10 @@ const startServer = async () => {
     connectDB()
       .then(() => console.log("DB ready"))
       .catch((err) => console.error("DB failed"));
-    app.listen(BACKEND_PORT, () => {
+    app.listen(PORT, () => {
       process.env.NODE_ENV === "production"
-        ? console.log(`Backend service running on ${BACKEND_PORT}`)
-        : console.log(
-            `Backend service running on http://localhost:${BACKEND_PORT}`
-          );
+        ? console.log(`Backend service running on ${PORT}`)
+        : console.log(`Backend service running on http://localhost:${PORT}`);
     });
   } catch (error) {
     console.error("Failed to start server:", error);
