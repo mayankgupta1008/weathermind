@@ -10,6 +10,10 @@ metadata:
     # RATE LIMITING
     nginx.ingress.kubernetes.io/limit-rps: "15"
     nginx.ingress.kubernetes.io/limit-burst-multiplier: "5"
+    # STICKY RULES
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/session-cookie-name: "route"
+    nginx.ingress.kubernetes.io/upstream-hash-by: "$binary_remote_addr"
 spec:
   ingressClassName: nginx
   rules:
@@ -41,4 +45,4 @@ spec:
               service:
                 name: web
                 port:
-                  number: 80
+                  number: 5173

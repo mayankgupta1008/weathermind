@@ -57,8 +57,10 @@ kind: ConfigMap
 metadata:
   name: backend-config
 data:
-  NODE_ENV: "production"
+  NODE_ENV: "development" # currently set as developement to disable secure cookies, set to production when we deploy to cloud
   PORT: "5001"
   MONGODB_URI: "mongodb://mongodb:27017/weather-agent"
   REDIS_HOST: "redis"
   REDIS_PORT: "6379"
+  BETTER_AUTH_URL: "http://weather-agent.com:8080/api/auth"
+  FRONTEND_URL: "http://weather-agent.com:8080"
