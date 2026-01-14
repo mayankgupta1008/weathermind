@@ -20,6 +20,6 @@ RUN --mount=type=cache,target=/pnpm/store \
 # We don't COPY the source code here because we will mount it as a volume
 # in docker-compose. However, we need the initial structure for pnpm to work.
 
-EXPOSE 80
+EXPOSE 5173
 
 CMD ["pnpm", "--filter", "web", "dev"]
