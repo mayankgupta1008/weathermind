@@ -264,39 +264,45 @@ router.post('/sendWeatherEmail',
 
 ```
 weather-agent/
-├── .env                    # Environment variables
-├── .dockerignore           # Docker ignore rules
-├── .gitignore              # Git ignore rules
-├── docker-compose.yaml     # Local development orchestration
-├── package.json            # Root package configuration
-├── pnpm-workspace.yaml     # Workspace definition (monorepo)
-├── apps/                   # Microservices and Frontend
-│   ├── web/                # React/Vite Frontend
-│   │   ├── src/            # UI components and logic
-│   │   ├── Dockerfile      # Frontend containerization
-│   │   └── vite.config.ts  # Vite configuration
-│   ├── backend/            # Express.js API Gateway
-│   │   ├── src/            # API routes and controllers
-│   │   └── Dockerfile      # Backend containerization
-│   └── agent-service/      # Background Workers / AI Agents
-│       ├── src/            # Workers and Agent logic
-│       └── Dockerfile      # Agent service containerization
-├── packages/               # Shared libraries
-│   └── shared/             # Common models, validation, and config
-│       ├── src/            # Shared source code
-│       │   ├── common/     # DB, Redis, Queue, Auth configs
-│       │   ├── models/     # Shared data models/interfaces
-│       │   └── index.ts    # Entry point for shared package
-├── infra/                  # Infrastructure configuration
-│   ├── nginx/              # Nginx reverse proxy configuration
-│   ├── prometheus/         # Monitoring configuration
-│   └── grafana/            # Dashboards and visualization
-├── k8s/                    # Kubernetes manifests
-│   ├── apps/               # Service deployments (web, backend, agent)
-│   ├── infra/              # Database and Redis services
-│   └── common/             # ConfigMaps and Secrets
-├── terraform/              # Infrastructure as Code (Cloud setup)
-└── scripts/                # Utility scripts
+├── apps/
+│   ├── web/                    # React frontend (Vite)
+│   ├── backend/                # Auth & API service (Express)
+│   │   ├── src/
+│   │   │   ├── routes/         # API endpoints
+│   │   │   ├── controllers/    # Business logic
+│   │   │   └── index.ts        # Server entry point
+│   │   └── Dockerfile.prod     # Production container
+│   └── agent-service/          # AI worker service
+│       ├── src/
+│       │   ├── agents/         # LangGraph workflows
+│       │   ├── workers/        # BullMQ job processors
+│       │   └── index.ts
+│       └── Dockerfile.prod
+├── packages/
+│   └── shared/                 # Common code
+│       ├── src/
+│           ├── common/         # Auth, DB, Redis, Queue configs
+│           ├── models/         # MongoDB schemas
+│           └── monitoring/     # Prometheus metrics
+├── k8s/                        # Kubernetes manifests
+│   ├── backend/                # Backend deployment, service, configmap
+│   ├── agent-service/          # Agent deployment, service
+│   ├── mongodb/                # StatefulSet, PVC, service
+│   ├── redis/                  # Deployment, PVC, service
+│   ├── web/                    # Frontend deployment
+│   ├── ingress.yaml            # NGINX ingress rules
+│   └── cert-manager-issuer.yaml # Let's Encrypt SSL
+├── infra/
+│   ├── nginx/                  # Nginx gateway config
+│   ├── prometheus/             # Metrics scraping config
+│   └── grafana/                # Dashboard definitions
+├── terraform/                  # IaC for cloud resources (WIP)
+├── scripts/
+│   ├── deploy-local.sh         # Local Kind cluster deployment
+│   └── stop-local.sh           # Cleanup script
+├── docker-compose.dev.yaml     # Local dev environment
+├── docker-compose.prod.yaml    # Local prod testing
+└── pnpm-workspace.yaml         # Monorepo config
 ```
 
 ## 📧 Email Output
