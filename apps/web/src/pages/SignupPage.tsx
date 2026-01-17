@@ -12,7 +12,8 @@ import {
 } from "@/components/ui/card";
 import { toast } from "sonner";
 import googleLogo from "@/assets/google-logo.svg";
-import { createAuthClient } from "better-auth/client";
+import { authClient } from "@/lib/auth-client";
+import { useNavigate } from "react-router-dom";
 
 const SignupPage = () => {
   const [fullName, setFullName] = useState("");
@@ -20,9 +21,7 @@ const SignupPage = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const authClient = createAuthClient({
-    baseURL: window.location.origin + "/api/auth",
-  });
+  const navigate = useNavigate();
 
   const handleSubmit = async () => {
     if (password !== confirmPassword) {
@@ -185,6 +184,7 @@ const SignupPage = () => {
               <a
                 href="#"
                 className="text-blue-600 hover:text-blue-700 hover:underline font-medium"
+                onClick={() => navigate("/login")}
               >
                 Sign in
               </a>

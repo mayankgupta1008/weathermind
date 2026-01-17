@@ -1,5 +1,5 @@
 const DashboardPage = () => {
-  return <div>DashboardPage</div>;
+  return <div className="justify-center pt-10">DashboardPage</div>;
 };
 
 export default DashboardPage;

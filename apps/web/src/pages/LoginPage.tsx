@@ -11,13 +11,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import googleLogo from "@/assets/google-logo.svg";
-import { createAuthClient } from "better-auth/client";
+import { createAuthClient } from "better-auth/react";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const authClient = createAuthClient();
+  const navigate = useNavigate();
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -122,7 +124,7 @@ const LoginPage = () => {
               <a
                 href="#"
                 className="text-blue-600 hover:text-blue-700 hover:underline font-medium"
-                onClick={handleSubmit}
+                onClick={() => navigate("/signup")}
               >
                 Sign up
               </a>
